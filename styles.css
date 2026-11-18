@@ -28,6 +28,9 @@ html {
   scroll-behavior: smooth;
   background-color: var(--bg-deep);
   color: var(--parchment);
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -35,6 +38,8 @@ body {
   background: radial-gradient(ellipse at 50% 0%, #1b2434 0%, var(--bg-deep) 68%);
   color: var(--parchment);
   line-height: 1.65;
+  width: 100%;
+  max-width: 100%;
   overflow-x: hidden;
   min-height: 100vh;
 }
@@ -177,13 +182,17 @@ main, footer {
   border: 1px solid var(--border-amber);
   box-shadow: var(--shadow-lg);
   background:
-    linear-gradient(180deg, rgba(12, 16, 23, 0.45) 0%, rgba(12, 16, 23, 0.88) 72%, rgba(12, 16, 23, 0.97) 100%),
-    url('assets/backgrounds/starry-night.jpg') center/cover no-repeat;
+    linear-gradient(180deg, rgba(12, 16, 23, 0.58) 0%, rgba(12, 16, 23, 0.86) 72%, rgba(12, 16, 23, 0.96) 100%),
+    url('assets/backgrounds/starry-night.jpg?v=3') center/cover no-repeat;
   padding: 3.5rem 2rem 2.5rem;
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
   gap: 2rem;
   align-items: center;
+}
+
+.hero-copy {
+  min-width: 0;
 }
 
 .hero-copy h1 {
@@ -710,9 +719,11 @@ main, footer {
 
 .hud-stats {
   display: flex;
-  gap: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.25rem;
   font-weight: 600;
   font-size: 0.95rem;
+  min-width: 0;
 }
 
 .hud-stat span {
@@ -819,27 +830,118 @@ main, footer {
   .hero-stage,
   .theater-grid,
   .studio-wrap {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
-  .trio-grid {
-    grid-template-columns: 1fr;
+  .hero-stage {
+    text-align: center;
+    padding: 2.4rem 1.5rem 1.75rem;
+    gap: 1.5rem;
   }
+  .hero-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .hero-copy .btn-row {
+    justify-content: center;
+  }
+  .trio-grid,
   .supporting-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .sticker-grid {
     grid-template-columns: repeat(2, 1fr);
   }
   .hero-diorama {
-    height: 290px;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    padding-top: 0.5rem;
   }
-  .diorama-barnaby { height: 250px; }
-  .diorama-crunge { height: 235px; }
-  .diorama-shelly { height: 130px; }
+  .diorama-barnaby { height: 225px; }
+  .diorama-crunge { height: 210px; }
+  .diorama-shelly { height: 120px; }
 }
 
-@media (max-width: 520px) {
-  .sticker-grid {
-    grid-template-columns: 1fr;
+@media (max-width: 600px) {
+  .nav-inner {
+    padding: 0.75rem 1rem;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.4rem;
+  }
+  .brand {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.1rem;
+  }
+  .brand-title {
+    font-size: 1.3rem;
+  }
+  .nav-links {
+    justify-content: center;
+    gap: 1.2rem;
+  }
+  .hero {
+    margin-top: 0.35rem;
+    padding: 0.85rem 0.9rem 1.25rem;
+  }
+  .hero-stage {
+    border-radius: 20px;
+    padding: 1.65rem 1.15rem 1.2rem;
+    gap: 1.15rem;
+  }
+  .hero-copy h1 {
+    font-size: clamp(1.9rem, 8vw, 2.35rem);
+    line-height: 1.12;
+    margin-bottom: 0.75rem;
+  }
+  .hero-tagline {
+    font-size: 1.12rem;
+    line-height: 1.45;
+    margin-bottom: 1.25rem;
+  }
+  .hero-copy .btn-row {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+  }
+  .hero-copy .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .hero-diorama {
+    padding-top: 0.35rem;
+  }
+  .diorama-crunge {
+    height: 150px;
+    margin-right: -4px;
+  }
+  .diorama-shelly {
+    height: 88px;
+  }
+  .candle-aura {
+    width: 120px;
+    height: 120px;
+  }
+  .diorama-barnaby {
+    height: 162px;
+    margin-left: -2px;
+  }
+  .section {
+    padding: 2.8rem 1rem;
+  }
+  .ep-item {
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 0.65rem;
+  }
+  .ep-thumb {
+    width: 96px;
+    height: 58px;
+  }
+  .game-shell {
+    padding: 1.15rem;
   }
 }
