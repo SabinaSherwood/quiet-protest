@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The World of Quiet Protest and Soft Light — By Yerma Woods</title>
+  <meta name="description" content="Watch Season 1 of The World of Quiet Protest and Soft Light and play Sad Bear's Quest.">
+  <meta property="og:title" content="The World of Quiet Protest and Soft Light — By Yerma Woods">
+  <meta property="og:description" content="Animated storybook fables featuring Shelly, Crunge, and Barnaby.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/posters/ep3.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <canvas id="fireflyCanvas" aria-hidden="true"></canvas>
+
+  <header class="site-nav">
+    <div class="nav-inner">
+      <a href="#top" class="brand">
+        <span class="brand-title">Quiet Protest &amp; Soft Light</span>
+        <span class="brand-byline">By Yerma Woods</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#watch">Screening Room</a>
+        <a href="#quest">Sad Bear’s Quest</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-stage">
+        <div class="hero-copy">
+          <span class="eyebrow">Animated Storybook Series</span>
+          <h1>The World of Quiet Protest and Soft Light</h1>
+          <p class="hero-tagline">“A candle, a sign, and a painted smile. Together they wander where the world has forgotten to look.”</p>
+          <div class="btn-row">
+            <a href="#watch" class="btn btn-primary">▶ Screening Room</a>
+            <a href="#quest" class="btn btn-secondary">🕯️ Play Sad Bear’s Quest</a>
+          </div>
+        </div>
+
+        <div class="hero-diorama" aria-label="Crunge, Shelly, and Barnaby">
+          <img class="diorama-char diorama-crunge" src="assets/sprites/crunge-resist.png" alt="Crunge" draggable="false">
+          <div class="diorama-shelly-wrap">
+            <div class="candle-aura"></div>
+            <img class="diorama-char diorama-shelly" src="assets/sprites/shelly-content.png" alt="Shelly" draggable="false">
+          </div>
+          <img class="diorama-char diorama-barnaby" src="assets/sprites/barnaby-umbrella.png" alt="Barnaby" draggable="false">
+        </div>
+      </div>
+    </section>
+
+    <!-- 1. Season 1 Screening Room (Stream Only — No Downloads) -->
+    <section id="watch" class="section">
+      <div class="section-header">
+        <span class="eyebrow">Screening Room</span>
+        <h2 class="section-title">Season 1</h2>
+        <p class="section-sub">Select any episode on the right to watch.</p>
+      </div>
+
+      <div class="theater-grid">
+        <div class="player-card">
+          <div id="videoStage" class="video-stage">
+            <video id="mainVideo" controls controlsList="nodownload noplaybackrate" disablePictureInPicture playsinline preload="metadata" poster="assets/posters/ep0.jpg"></video>
+          </div>
+          <div class="player-meta">
+            <div class="player-top-row">
+              <div>
+                <div id="nowPlayingBadge" class="now-playing-badge">Episode 0 • 1:00</div>
+                <h3 id="playerTitle" class="player-title">How They Met</h3>
+              </div>
+            </div>
+            <p id="playerDesc" class="player-desc"></p>
+          </div>
+        </div>
+
+        <div id="episodePlaylist" class="playlist" aria-label="Episode selection"></div>
+      </div>
+    </section>
+
+    <!-- 2. Sad Bear's Quest Mini-Game -->
+    <section id="quest" class="section">
+      <div class="section-header">
+        <span class="eyebrow">Mini-Game</span>
+        <h2 class="section-title">Sad Bear’s Quest</h2>
+        <p class="section-sub">Click Start Game below, then use your Arrow Keys or WASD (or tap the arrows on mobile) to help Barnaby gather 10 small comforts while giving Shelly’s candle gentle space.</p>
+      </div>
+
+      <div class="game-shell">
+        <div class="game-hud">
+          <div class="hud-stats">
+            <div class="hud-stat">Clarity: <span id="questScore">0 / 10</span></div>
+            <div id="questStatus" class="section-sub">Paused — click Start Game whenever you want to play</div>
+          </div>
+          <div class="btn-row">
+            <button id="questStartBtn" type="button" class="btn btn-primary btn-sm">▶ Start Game</button>
+            <button id="questMuteBtn" type="button" class="btn btn-secondary btn-sm">Sound: Off</button>
+            <button id="questResetBtn" type="button" class="btn btn-secondary btn-sm">↺ Reset</button>
+          </div>
+        </div>
+
+        <div class="game-canvas-wrap">
+          <canvas id="questCanvas" width="880" height="500"></canvas>
+        </div>
+
+        <div class="touch-controls" aria-label="Touch directional controls">
+          <button type="button" class="touch-btn" data-dir="arrowleft" aria-label="Move Left">◀</button>
+          <button type="button" class="touch-btn" data-dir="arrowup" aria-label="Move Up">▲</button>
+          <button type="button" class="touch-btn" data-dir="arrowdown" aria-label="Move Down">▼</button>
+          <button type="button" class="touch-btn" data-dir="arrowright" aria-label="Move Right">▶</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p class="footer-quote">“Nobody introduced anybody. No one asked what the plan was.”</p>
+    <p>© 2025–2026 Yerma Woods. All rights reserved.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
