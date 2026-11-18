@@ -19,8 +19,8 @@ const EPISODES = [
     num: 'Episode 1',
     title: 'The Myth of “Going Back to Normal”',
     runtime: '1:20',
-    poster: 'assets/posters/ep1.jpg',
-    video1080: 'videos/1080p/ep1.mp4',
+    poster: 'assets/posters/ep1.jpg?v=2',
+    video1080: 'videos/1080p/ep1.mp4?v=2',
     vertical: false,
     desc: 'At a rain-drizzling neon forest bus stop, Barnaby wraps yards of silver duct tape around his wind-snapped duck-handle umbrella while Shelly and Crunge turn a broken canopy into a boat.'
   },
