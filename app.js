@@ -75,6 +75,16 @@ const EPISODES = [
     desc: 'Crunge’s Sharpie freezes at 3:15, Venus and Mercury both clear retrograde, the porch string-lights immediately short out in the November sleet, and Shelly’s single candle lights the dark.'
   },
   {
+    id: 'ep7',
+    num: 'Episode 7',
+    title: 'Purr Words',
+    runtime: '1:00',
+    poster: 'assets/posters/ep7.jpg',
+    video1080: 'videos/1080p/ep7.mp4',
+    vertical: false,
+    desc: 'When Top-Hat Frog bolts steel divider bars across Barnaby’s park bench and calls it a proactive seating transition, Crunge decodes the purr words and Shelly’s candle melts straight through the laminated map.'
+  },
+  {
     id: 'ep0-reel',
     num: 'Bonus • 9:16 Vertical Reel',
     title: 'How They Met (Captioned Short)',
