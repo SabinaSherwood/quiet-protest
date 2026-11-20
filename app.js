@@ -85,6 +85,26 @@ const EPISODES = [
     desc: 'When Top-Hat Frog bolts steel divider bars across Barnaby’s park bench and calls it a proactive seating transition, Crunge decodes the purr words and Shelly’s candle melts straight through the laminated map.'
   },
   {
+    id: 'ep8',
+    num: 'Episode 8',
+    title: 'What Is in a Word?',
+    runtime: '1:31',
+    poster: 'assets/posters/ep8.jpg',
+    video1080: 'videos/1080p/ep8.mp4',
+    vertical: false,
+    desc: 'When Top-Hat Frog turns a noon handshake into an exclusive rain-umbrella contract while Shelly’s candle drowns on the wet stone, Crunge plants his Mercy sign in the puddle and Barnaby chooses the flame over the receipt.'
+  },
+  {
+    id: 'ep9',
+    num: 'Episode 9',
+    title: 'The Dry Umbrella',
+    runtime: '1:18',
+    poster: 'assets/posters/ep9.jpg',
+    video1080: 'videos/1080p/ep9.mp4',
+    vertical: false,
+    desc: 'After twelve storm-soaked hours wringing wool towels while the brass Storm Help eye clicks green for five seconds at 8:00 PM and shuts off, a theater spotlight snaps on at 9:00 AM over empty bleachers to present a spotless yellow umbrella.'
+  },
+  {
     id: 'ep0-reel',
     num: 'Bonus • 9:16 Vertical Reel',
     title: 'How They Met (Captioned Short)',
