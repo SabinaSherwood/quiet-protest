@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <title>CARNIVAL — Screening Room | Yerma Woods</title>
+  <meta name="description" content="Private Screening Room for CARNIVAL I–X by Yerma Woods." />
+  <meta property="og:title" content="CARNIVAL — Screening Room | Yerma Woods" />
+  <meta property="og:description" content="Music-first hollow-line chiaroscuro animation series by Yerma Woods." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://quietprotest.org/carnival/" />
+  <meta property="og:image" content="https://quietprotest.org/carnival/posters/sq_IX.jpg" />
+  <style>
+    :root {
+      --bg: #0a0a0d;
+      --card-bg: #101117;
+      --ink: #f5f1e9;
+      --muted: rgba(245, 241, 233, 0.62);
+      --faint: rgba(245, 241, 233, 0.34);
+      --frost-rim: rgba(210, 228, 245, 0.16);
+      --frost-border: rgba(210, 228, 245, 0.11);
+      --gold: #e8b84b;
+      --ice: #8ec8ff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #fireflyCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.85;
+      transition: opacity 0.6s ease;
+    }
+    body.is-playing #fireflyCanvas {
+      opacity: 0.18;
+    }
+
+    .shell {
+      position: relative;
+      z-index: 1;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 48px 24px 84px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 34px;
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-weight: normal;
+      font-size: clamp(28px, 4.5vw, 44px);
+      letter-spacing: 0.22em;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    .byline {
+      font-size: 15px;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .filigree {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin: 22px auto 0;
+      max-width: 360px;
+      color: rgba(210, 228, 245, 0.42);
+    }
+    .filigree::before,
+    .filigree::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(210, 228, 245, 0.24), transparent);
+    }
+
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .pill-btn {
+      background: rgba(18, 20, 28, 0.88);
+      color: var(--muted);
+      border: 1px solid var(--frost-border);
+      box-shadow: inset 0 1px 0 var(--frost-rim);
+      border-radius: 999px;
+      padding: 8px 18px;
+      font-family: inherit;
+      font-size: 12.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .pill-btn:hover {
+      color: var(--ink);
+      border-color: rgba(210, 228, 245, 0.34);
+    }
+    .pill-btn.active {
+      color: var(--bg);
+      background: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .theater-card {
+      max-width: 680px;
+      margin: 0 auto 48px;
+      background: var(--card-bg);
+      border: 1px solid var(--frost-border);
+      box-shadow: inset 0 1px 0 var(--frost-rim), 0 26px 70px rgba(0, 0, 0, 0.72);
+      border-radius: 14px;
+      padding: 20px 20px 22px;
+      transition: max-width 0.28s ease;
+    }
+    .theater-card.vertical-stage {
+      max-width: 410px;
+    }
+
+    .stage-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #050507;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .theater-card.vertical-stage .stage-frame {
+      aspect-ratio: 9 / 16;
+    }
+
+    .stage-frame video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      background: #050507;
+    }
+
+    .stage-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      margin-top: 16px;
+      padding: 0 4px;
+    }
+    .stage-title {
+      font-size: 19px;
+      letter-spacing: 0.16em;
+    }
+    .stage-sub {
+      font-size: 13.5px;
+      color: var(--muted);
+      margin-top: 5px;
+      line-height: 1.45;
+    }
+    .stage-nav {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--frost-border);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-family: inherit;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+    }
+    .nav-btn:hover {
+      border-color: rgba(232, 184, 75, 0.55);
+      color: var(--gold);
+    }
+
+    .section-label {
+      text-align: center;
+      font-size: 11.5px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 22px;
+    }
+
+    .episode-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+      gap: 18px;
+    }
+
+    .ep-card {
+      background: var(--card-bg);
+      border: 1px solid var(--frost-border);
+      box-shadow: inset 0 1px 0 var(--frost-rim), 0 10px 28px rgba(0, 0, 0, 0.45);
+      border-radius: 10px;
+      padding: 12px;
+      cursor: pointer;
+      transition: transform 0.18s ease, border-color 0.18s ease;
+    }
+    .ep-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(210, 228, 245, 0.32);
+    }
+    .ep-card.current {
+      border-color: rgba(232, 184, 75, 0.68);
+      box-shadow: inset 0 1px 0 rgba(232, 184, 75, 0.35), 0 12px 32px rgba(0, 0, 0, 0.6);
+    }
+
+    .ep-thumb {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #050507;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: 10px;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    body.mode-9x16 .ep-thumb {
+      aspect-ratio: 9 / 16;
+    }
+    .ep-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    .ep-badge {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(10, 10, 13, 0.82);
+      border: 1px solid rgba(210, 228, 245, 0.2);
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-size: 10.5px;
+      letter-spacing: 0.14em;
+      color: var(--ink);
+    }
+
+    .ep-name {
+      font-size: 14px;
+      letter-spacing: 0.14em;
+      margin-bottom: 4px;
+    }
+    .ep-note {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.38;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 58px;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      color: var(--faint);
+    }
+  </style>
+</head>
+<body>
+  <canvas id="fireflyCanvas" aria-hidden="true"></canvas>
+
+  <main class="shell">
+    <header>
+      <div class="eyebrow">Screening Room</div>
+      <h1>CARNIVAL</h1>
+      <div class="byline">By Yerma Woods</div>
+      <div class="filigree" aria-hidden="true">
+        <svg width="46" height="20" viewBox="0 0 46 20" fill="none" stroke="currentColor" stroke-width="1.15">
+          <line x1="12" y1="3" x2="12" y2="17"/>
+          <line x1="5.9" y1="6.5" x2="18.1" y2="13.5"/>
+          <line x1="18.1" y1="6.5" x2="5.9" y2="13.5"/>
+          <circle cx="12" cy="10" r="2.2"/>
+          <path d="M34 3.5 C36.8 7.5, 37.5 11.2, 34 15.8 C30.5 11.2, 31.2 7.5, 34 3.5 Z" stroke="#e8b84b"/>
+        </svg>
+      </div>
+    </header>
+
+    <div class="controls-bar" role="group" aria-label="Format selector">
+      <button class="pill-btn active" id="btnSquare" type="button">1:1 Square Stage (I–X)</button>
+      <button class="pill-btn" id="btnShortFull" type="button">9:16 Vertical Full (60s)</button>
+      <button class="pill-btn" id="btnShortDrop" type="button">9:16 Vertical Drop Cut</button>
+    </div>
+
+    <section class="theater-card" id="theaterCard" aria-label="Featured screening player">
+      <div class="stage-frame">
+        <video
+          id="mainPlayer"
+          controls
+          controlsList="nodownload noplaybackrate"
+          disablePictureInPicture
+          playsinline
+          preload="metadata"
+          oncontextmenu="return false;"
+        ></video>
+      </div>
+      <div class="stage-meta">
+        <div>
+          <div class="stage-title" id="stageTitle">CARNIVAL IX</div>
+          <div class="stage-sub" id="stageSub">Scary Red Funhouse Discovery, One-Way Cool Blue Reclamation &amp; 1-Beat Glass Drop</div>
+        </div>
+        <div class="stage-nav">
+          <button class="nav-btn" id="prevBtn" type="button">&larr; Prev</button>
+          <button class="nav-btn" id="nextBtn" type="button">Next &rarr;</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-label">Episodes I – X</div>
+    <section class="episode-grid" id="episodeGrid"></section>
+
+    <footer>&copy; 2026 Yerma Woods. All Rights Reserved.</footer>
+  </main>
+
+  <script>
+    const EPISODES = [
+      { roman: "I",    title: "CARNIVAL I",    sub: "Fresco Storm Sky, Candied Apples & Closing Candle Holdout" },
+      { roman: "II",   title: "CARNIVAL II",   sub: "Fairgrounds Ferris Wheel, Concession Midway & Jazz Bandstand" },
+      { roman: "III",  title: "CARNIVAL III",  sub: "Open Window Bridge, Horse Viewer Turn & Swirling Autumn Leaves" },
+      { roman: "IV",   title: "CARNIVAL IV",   sub: "Foil-Tray Steam, TV Confetti Shower & Autumn-to-Snow Drift" },
+      { roman: "V",    title: "CARNIVAL V",    sub: "Inverted Spinning Christmas Tree, Rooftop Santa & Stoplight" },
+      { roman: "VI",   title: "CARNIVAL VI",   sub: "Whispered Frame Shutter Slam, Holiday Aftermath & Mary's Walk-Out" },
+      { roman: "VII",  title: "CARNIVAL VII",  sub: "Match Spark, Midnight 3D Merry-Go-Round & Empty Ghost Horse" },
+      { roman: "VIII", title: "CARNIVAL VIII", sub: "Dual-Axis Spinning Teacups, Snowfall & Molten Ferris Wheel" },
+      { roman: "IX",   title: "CARNIVAL IX",   sub: "Scary Red Funhouse Discovery, One-Way Cool Blue Reclamation & 1-Beat Glass Drop" },
+      { roman: "X",    title: "CARNIVAL X",    sub: "Skate-Drop Transform, Detroit Winter Rink & Cracked-Ice Cliffhanger" }
+    ];
+
+    let currentIdx = 8; // Opens directly on Episode IX
+    let currentMode = "sq"; // "sq" | "vFull" | "vDrop"
+
+    const mainPlayer = document.getElementById("mainPlayer");
+    const stageTitle = document.getElementById("stageTitle");
+    const stageSub = document.getElementById("stageSub");
+    const theaterCard = document.getElementById("theaterCard");
+    const grid = document.getElementById("episodeGrid");
+
+    function srcFor(ep) {
+      const r = ep.roman;
+      const v = r === "IX" ? "?v=4" : "?v=1";
+      if (currentMode === "vFull") return `videos/carnival_${r}_9x16_full.mp4${v}`;
+      if (currentMode === "vDrop") return `videos/carnival_${r}_9x16_drop.mp4${v}`;
+      return `videos/carnival_${r}_square.mp4${v}`;
+    }
+
+    function posterFor(ep) {
+      const r = ep.roman;
+      const v = r === "IX" ? "?v=4" : "?v=1";
+      return currentMode === "sq" ? `posters/sq_${r}.jpg${v}` : `posters/v_${r}.jpg${v}`;
+    }
+
+    function renderGrid() {
+      grid.innerHTML = "";
+      EPISODES.forEach((ep, idx) => {
+        const card = document.createElement("article");
+        card.className = "ep-card" + (idx === currentIdx ? " current" : "");
+        card.innerHTML = `
+          <div class="ep-thumb">
+            <img src="${posterFor(ep)}" alt="${ep.title}" loading="lazy" draggable="false" oncontextmenu="return false;" />
+            <span class="ep-badge">${ep.roman}</span>
+          </div>
+          <div class="ep-name">${ep.title}</div>
+          <div class="ep-note">${ep.sub}</div>
+        `;
+        card.addEventListener("click", () => selectEpisode(idx, true));
+        grid.appendChild(card);
+      });
+    }
+
+    function selectEpisode(idx, autoplay = false) {
+      currentIdx = (idx + EPISODES.length) % EPISODES.length;
+      const ep = EPISODES[currentIdx];
+      stageTitle.textContent = ep.title;
+      stageSub.textContent = ep.sub;
+      mainPlayer.poster = posterFor(ep);
+      mainPlayer.src = srcFor(ep);
+      document.querySelectorAll(".ep-card").forEach((el, i) => {
+        el.classList.toggle("current", i === currentIdx);
+      });
+      if (autoplay) {
+        mainPlayer.play().catch(() => {});
+      }
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      const isVert = mode !== "sq";
+      theaterCard.classList.toggle("vertical-stage", isVert);
+      document.body.classList.toggle("mode-9x16", isVert);
+      document.getElementById("btnSquare").classList.toggle("active", mode === "sq");
+      document.getElementById("btnShortFull").classList.toggle("active", mode === "vFull");
+      document.getElementById("btnShortDrop").classList.toggle("active", mode === "vDrop");
+      renderGrid();
+      selectEpisode(currentIdx, false);
+    }
+
+    document.getElementById("btnSquare").addEventListener("click", () => setMode("sq"));
+    document.getElementById("btnShortFull").addEventListener("click", () => setMode("vFull"));
+    document.getElementById("btnShortDrop").addEventListener("click", () => setMode("vDrop"));
+    document.getElementById("prevBtn").addEventListener("click", () => selectEpisode(currentIdx - 1, true));
+    document.getElementById("nextBtn").addEventListener("click", () => selectEpisode(currentIdx + 1, true));
+
+    mainPlayer.addEventListener("play", () => document.body.classList.add("is-playing"));
+    mainPlayer.addEventListener("pause", () => document.body.classList.remove("is-playing"));
+    mainPlayer.addEventListener("ended", () => {
+      document.body.classList.remove("is-playing");
+      if (currentIdx < EPISODES.length - 1) selectEpisode(currentIdx + 1, true);
+    });
+
+    renderGrid();
+    selectEpisode(currentIdx, false);
+
+    (function initAmbient() {
+      if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      const canvas = document.getElementById("fireflyCanvas");
+      const ctx = canvas.getContext("2d");
+      let W = (canvas.width = window.innerWidth);
+      let H = (canvas.height = window.innerHeight);
+      window.addEventListener("resize", () => {
+        W = canvas.width = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+      });
+
+      const particles = Array.from({ length: 54 }, (_, i) => {
+        const isSnow = i % 3 !== 0;
+        return {
+          isSnow,
+          x: Math.random() * W,
+          y: Math.random() * H,
+          r: isSnow ? 1.1 + Math.random() * 1.9 : 1.2 + Math.random() * 2.1,
+          vy: isSnow ? 0.28 + Math.random() * 0.45 : -(0.16 + Math.random() * 0.28),
+          vx: (Math.random() - 0.5) * 0.22,
+          phase: Math.random() * Math.PI * 2,
+          alpha: isSnow ? 0.22 + Math.random() * 0.34 : 0.18 + Math.random() * 0.32
+        };
+      });
+
+      function tick(ts) {
+        if (!document.body.classList.contains("is-playing")) {
+          ctx.clearRect(0, 0, W, H);
+          const t = ts * 0.001;
+          for (const p of particles) {
+            p.x += p.vx + Math.sin(t * 0.7 + p.phase) * 0.16;
+            p.y += p.vy;
+            if (p.y > H + 8) p.y = -8;
+            if (p.y < -8) p.y = H + 8;
+            if (p.x > W + 8) p.x = -8;
+            if (p.x < -8) p.x = W + 8;
+            const pulse = 0.72 + 0.28 * Math.sin(t * 1.4 + p.phase);
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = p.isSnow
+              ? `rgba(226, 238, 255, ${(p.alpha * pulse).toFixed(3)})`
+              : `rgba(236, 184, 82, ${(p.alpha * pulse).toFixed(3)})`;
+            ctx.fill();
+          }
+        }
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    })();
+  </script>
+</body>
+</html>
