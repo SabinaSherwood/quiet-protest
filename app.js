@@ -252,26 +252,53 @@ document.addEventListener('dragstart', e => {
     const ep = CARNIVAL_EPISODES[currentIdx];
     stageTitle.textContent = ep.title;
     player.setAttribute('aria-label', `${ep.title} — ${ep.sub}`);
-    player.poster = posterFor(ep);
+
+    const isSeamlessSwap = autoplay || resumeTime !== null;
+    if (isSeamlessSwap) {
+      player.removeAttribute('poster');
+      player.style.opacity = '0';
+      player.style.transition = 'opacity 0.14s ease';
+    } else {
+      player.poster = posterFor(ep);
+      player.style.opacity = '1';
+    }
+
+    const revealPlayer = () => { player.style.opacity = '1'; };
     player.src = srcFor(ep);
-    if (resumeTime !== null && resumeTime > 0) {
+
+    if (resumeTime !== null) {
+      const targetT = Math.max(0.001, resumeTime);
       player.addEventListener('loadedmetadata', function onMeta() {
         player.removeEventListener('loadedmetadata', onMeta);
-        player.currentTime = Math.min(resumeTime, Math.max(0, (player.duration || resumeTime) - 0.1));
+        const clamped = Math.min(targetT, Math.max(0, (player.duration || targetT) - 0.08));
+        player.addEventListener('seeked', function onSeeked() {
+          player.removeEventListener('seeked', onSeeked);
+          revealPlayer();
+          if (autoplay) {
+            if (s1Video && !s1Video.paused) s1Video.pause();
+            player.play().catch(() => {});
+          }
+        });
+        player.currentTime = clamped;
       });
+    } else if (autoplay) {
+      player.addEventListener('loadeddata', function onData() {
+        player.removeEventListener('loadeddata', onData);
+        revealPlayer();
+      });
+      if (s1Video && !s1Video.paused) s1Video.pause();
+      player.play().catch(() => { revealPlayer(); });
     }
+
     document.querySelectorAll('.carnival-ep-card').forEach((el, i) => {
       el.classList.toggle('current', i === currentIdx);
     });
-    if (autoplay) {
-      if (s1Video && !s1Video.paused) s1Video.pause();
-      player.play().catch(() => {});
-    }
   }
 
   function toggleFormat() {
     const wasPlaying = !player.paused;
-    const savedTime = player.currentTime || 0;
+    const hasInteracted = wasPlaying || player.currentTime > 0 || !player.hasAttribute('poster');
+    const savedTime = hasInteracted ? (player.currentTime || 0) : null;
     currentMode = currentMode === 'vFull' ? 'sq' : 'vFull';
     const isVert = currentMode === 'vFull';
     theaterCard.classList.toggle('vertical-stage', isVert);
