@@ -825,6 +825,10 @@ body.is-playing #fireflyCanvas {
   letter-spacing: 0.22em;
 }
 
+.nav-inner-minimal {
+  justify-content: flex-end;
+}
+
 .carnival-showcase {
   max-width: 1180px;
   margin: 0 auto;

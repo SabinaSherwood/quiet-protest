@@ -412,7 +412,6 @@
 
   <main class="shell">
     <header>
-      <div class="eyebrow">Screening Room</div>
       <h1>CARNIVAL</h1>
       <div class="filigree" aria-hidden="true">
         <svg width="46" height="20" viewBox="0 0 46 20" fill="none" stroke="currentColor" stroke-width="1.15">
@@ -536,14 +535,40 @@
       const ep = EPISODES[currentIdx];
       stageTitle.textContent = ep.title;
       mainPlayer.setAttribute("aria-label", `${ep.title} — ${ep.sub}`);
-      mainPlayer.poster = posterFor(ep);
+
+      const isSeamlessSwap = autoplay || resumeTime !== null;
+      if (isSeamlessSwap) {
+        mainPlayer.removeAttribute("poster");
+        mainPlayer.style.opacity = "0";
+        mainPlayer.style.transition = "opacity 0.14s ease";
+      } else {
+        mainPlayer.poster = posterFor(ep);
+        mainPlayer.style.opacity = "1";
+      }
+
+      const revealPlayer = () => { mainPlayer.style.opacity = "1"; };
       mainPlayer.src = srcFor(ep);
-      if (resumeTime !== null && resumeTime > 0) {
+
+      if (resumeTime !== null) {
+        const targetT = Math.max(0.001, resumeTime);
         mainPlayer.addEventListener("loadedmetadata", function onMeta() {
           mainPlayer.removeEventListener("loadedmetadata", onMeta);
-          mainPlayer.currentTime = Math.min(resumeTime, Math.max(0, (mainPlayer.duration || resumeTime) - 0.1));
+          const clamped = Math.min(targetT, Math.max(0, (mainPlayer.duration || targetT) - 0.08));
+          mainPlayer.addEventListener("seeked", function onSeeked() {
+            mainPlayer.removeEventListener("seeked", onSeeked);
+            revealPlayer();
+            if (autoplay) mainPlayer.play().catch(() => {});
+          });
+          mainPlayer.currentTime = clamped;
         });
+      } else if (autoplay) {
+        mainPlayer.addEventListener("loadeddata", function onData() {
+          mainPlayer.removeEventListener("loadeddata", onData);
+          revealPlayer();
+        });
+        mainPlayer.play().catch(() => { revealPlayer(); });
       }
+
       const fullTitle = `${ep.title} — CARNIVAL`;
       const fullDesc = `${ep.title} by yerma woods: ${ep.sub}.`;
       const absPoster = `https://quietprotest.org/carnival/posters/sq_${ep.roman}.jpg`;
@@ -558,14 +583,12 @@
       document.querySelectorAll(".ep-card").forEach((el, i) => {
         el.classList.toggle("current", i === currentIdx);
       });
-      if (autoplay) {
-        mainPlayer.play().catch(() => {});
-      }
     }
 
     function toggleFormat() {
       const wasPlaying = !mainPlayer.paused;
-      const savedTime = mainPlayer.currentTime || 0;
+      const hasInteracted = wasPlaying || mainPlayer.currentTime > 0 || !mainPlayer.hasAttribute("poster");
+      const savedTime = hasInteracted ? (mainPlayer.currentTime || 0) : null;
       currentMode = currentMode === "vFull" ? "sq" : "vFull";
       const isVert = currentMode === "vFull";
       theaterCard.classList.toggle("vertical-stage", isVert);
