@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://quietprotest.org/carnival/" />
-  <title>CARNIVAL — Screening Room | Yerma Woods</title>
-  <meta name="author" content="Yerma Woods" />
-  <meta name="copyright" content="© 2026 Yerma Woods. All Rights Reserved." />
+  <title>CARNIVAL — Screening Room</title>
+  <meta name="author" content="yerma woods" />
+  <meta name="copyright" content="© 2026 yerma woods" />
   <meta name="description" id="metaDescription" content="CARNIVAL (Episodes I–X) by Yerma Woods — standalone music-first hollow-line chiaroscuro neon animation series spanning dark brass, midnight fairground noir, and Detroit winter." />
   <meta name="keywords" content="Yerma Woods, Carnival, hollow-line animation, chiaroscuro animation, music-first animation, independent animation, Detroit winter" />
   <meta property="og:site_name" content="Yerma Woods — Screening Room" />
@@ -214,14 +214,7 @@
       font-size: clamp(28px, 4.5vw, 44px);
       letter-spacing: 0.22em;
       color: var(--ink);
-      margin-bottom: 8px;
-    }
-
-    .byline {
-      font-size: 15px;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-      font-style: italic;
+      margin-bottom: 4px;
     }
 
     .filigree {
@@ -229,7 +222,7 @@
       align-items: center;
       justify-content: center;
       gap: 16px;
-      margin: 22px auto 0;
+      margin: 18px auto 0;
       max-width: 360px;
       color: rgba(210, 228, 245, 0.42);
     }
@@ -239,39 +232,6 @@
       flex: 1;
       height: 1px;
       background: linear-gradient(90deg, transparent, rgba(210, 228, 245, 0.24), transparent);
-    }
-
-    .controls-bar {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 28px;
-    }
-
-    .pill-btn {
-      background: rgba(18, 20, 28, 0.88);
-      color: var(--muted);
-      border: 1px solid var(--frost-border);
-      box-shadow: inset 0 1px 0 var(--frost-rim);
-      border-radius: 999px;
-      padding: 8px 18px;
-      font-family: inherit;
-      font-size: 12.5px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .pill-btn:hover {
-      color: var(--ink);
-      border-color: rgba(210, 228, 245, 0.34);
-    }
-    .pill-btn.active {
-      color: var(--bg);
-      background: var(--ink);
-      border-color: var(--ink);
     }
 
     .theater-card {
@@ -340,6 +300,28 @@
     .nav-btn:hover {
       border-color: rgba(232, 184, 75, 0.55);
       color: var(--gold);
+    }
+
+    .stage-format-foot {
+      margin-top: 14px;
+      padding-top: 11px;
+      border-top: 1px solid rgba(210, 228, 245, 0.07);
+      text-align: center;
+    }
+    .format-switch-link {
+      background: none;
+      border: none;
+      color: var(--faint);
+      font-family: inherit;
+      font-size: 11.5px;
+      letter-spacing: 0.12em;
+      text-transform: lowercase;
+      cursor: pointer;
+      padding: 2px 6px;
+      transition: color 0.2s ease;
+    }
+    .format-switch-link:hover {
+      color: var(--ink);
     }
 
     .section-label {
@@ -419,19 +401,19 @@
       text-align: center;
       margin-top: 58px;
       font-size: 12px;
-      letter-spacing: 0.1em;
+      letter-spacing: 0.09em;
+      text-transform: lowercase;
       color: var(--faint);
     }
   </style>
 </head>
-<body>
+<body class="mode-9x16">
   <canvas id="fireflyCanvas" aria-hidden="true"></canvas>
 
   <main class="shell">
     <header>
       <div class="eyebrow">Screening Room</div>
       <h1>CARNIVAL</h1>
-      <div class="byline">By Yerma Woods</div>
       <div class="filigree" aria-hidden="true">
         <svg width="46" height="20" viewBox="0 0 46 20" fill="none" stroke="currentColor" stroke-width="1.15">
           <line x1="12" y1="3" x2="12" y2="17"/>
@@ -443,13 +425,7 @@
       </div>
     </header>
 
-    <div class="controls-bar" role="group" aria-label="Format selector">
-      <button class="pill-btn active" id="btnSquare" type="button">1:1 Square Stage (I–X)</button>
-      <button class="pill-btn" id="btnShortFull" type="button">9:16 Vertical Full (60s)</button>
-      <button class="pill-btn" id="btnShortDrop" type="button">9:16 Vertical Drop Cut</button>
-    </div>
-
-    <section class="theater-card" id="theaterCard" aria-label="Featured screening player">
+    <section class="theater-card vertical-stage" id="theaterCard" aria-label="Featured screening player">
       <div class="stage-frame">
         <video
           id="mainPlayer"
@@ -468,12 +444,19 @@
           <button class="nav-btn" id="nextBtn" type="button">Next &rarr;</button>
         </div>
       </div>
+      <div class="stage-format-foot">
+        <button class="format-switch-link" id="btnToggleFormat" type="button">switch to 1:1 square</button>
+      </div>
     </section>
 
     <div class="section-label">Episodes I – X</div>
     <section class="episode-grid" id="episodeGrid"></section>
 
-    <footer>&copy; 2026 Yerma Woods. All Rights Reserved.</footer>
+    <footer>
+      <button class="format-switch-link" id="btnFooterFormat" type="button">switch to 1:1 square</button>
+      <span aria-hidden="true">&nbsp;&middot;&nbsp;</span>
+      <span>&copy; 2026 yerma woods</span>
+    </footer>
   </main>
 
   <script>
@@ -491,12 +474,14 @@
     ];
 
     let currentIdx = 0;
-    let currentMode = "sq"; // "sq" | "vFull" | "vDrop"
+    let currentMode = "vFull"; // Default 9:16 Full ("vFull" | "sq")
 
     const mainPlayer = document.getElementById("mainPlayer");
     const stageTitle = document.getElementById("stageTitle");
     const theaterCard = document.getElementById("theaterCard");
     const grid = document.getElementById("episodeGrid");
+    const btnToggleFormat = document.getElementById("btnToggleFormat");
+    const btnFooterFormat = document.getElementById("btnFooterFormat");
     const metaDescEl = document.getElementById("metaDescription");
     const ogTitleEl = document.getElementById("ogTitle");
     const ogDescEl = document.getElementById("ogDescription");
@@ -512,15 +497,19 @@
     function srcFor(ep) {
       const r = ep.roman;
       const v = r === "IX" ? "?v=4" : "?v=1";
-      if (currentMode === "vFull") return `videos/carnival_${r}_9x16_full.mp4${v}`;
-      if (currentMode === "vDrop") return `videos/carnival_${r}_9x16_drop.mp4${v}`;
-      return `videos/carnival_${r}_square.mp4${v}`;
+      return currentMode === "vFull" ? `videos/carnival_${r}_9x16_full.mp4${v}` : `videos/carnival_${r}_square.mp4${v}`;
     }
 
     function posterFor(ep) {
       const r = ep.roman;
       const v = r === "IX" ? "?v=4" : "?v=1";
       return currentMode === "sq" ? `posters/sq_${r}.jpg${v}` : `posters/v_${r}.jpg${v}`;
+    }
+
+    function updateFormatLabels() {
+      const label = currentMode === "vFull" ? "switch to 1:1 square" : "switch to 9:16 vertical";
+      if (btnToggleFormat) btnToggleFormat.textContent = label;
+      if (btnFooterFormat) btnFooterFormat.textContent = label;
     }
 
     function renderGrid() {
@@ -542,15 +531,21 @@
       });
     }
 
-    function selectEpisode(idx, autoplay = false) {
+    function selectEpisode(idx, autoplay = false, resumeTime = null) {
       currentIdx = (idx + EPISODES.length) % EPISODES.length;
       const ep = EPISODES[currentIdx];
       stageTitle.textContent = ep.title;
       mainPlayer.setAttribute("aria-label", `${ep.title} — ${ep.sub}`);
       mainPlayer.poster = posterFor(ep);
       mainPlayer.src = srcFor(ep);
-      const fullTitle = `${ep.title} — CARNIVAL | Yerma Woods`;
-      const fullDesc = `${ep.title} by Yerma Woods: ${ep.sub}.`;
+      if (resumeTime !== null && resumeTime > 0) {
+        mainPlayer.addEventListener("loadedmetadata", function onMeta() {
+          mainPlayer.removeEventListener("loadedmetadata", onMeta);
+          mainPlayer.currentTime = Math.min(resumeTime, Math.max(0, (mainPlayer.duration || resumeTime) - 0.1));
+        });
+      }
+      const fullTitle = `${ep.title} — CARNIVAL`;
+      const fullDesc = `${ep.title} by yerma woods: ${ep.sub}.`;
       const absPoster = `https://quietprotest.org/carnival/posters/sq_${ep.roman}.jpg`;
       document.title = fullTitle;
       if (metaDescEl) metaDescEl.setAttribute("content", fullDesc);
@@ -568,21 +563,20 @@
       }
     }
 
-    function setMode(mode) {
-      currentMode = mode;
-      const isVert = mode !== "sq";
+    function toggleFormat() {
+      const wasPlaying = !mainPlayer.paused;
+      const savedTime = mainPlayer.currentTime || 0;
+      currentMode = currentMode === "vFull" ? "sq" : "vFull";
+      const isVert = currentMode === "vFull";
       theaterCard.classList.toggle("vertical-stage", isVert);
       document.body.classList.toggle("mode-9x16", isVert);
-      document.getElementById("btnSquare").classList.toggle("active", mode === "sq");
-      document.getElementById("btnShortFull").classList.toggle("active", mode === "vFull");
-      document.getElementById("btnShortDrop").classList.toggle("active", mode === "vDrop");
+      updateFormatLabels();
       renderGrid();
-      selectEpisode(currentIdx, false);
+      selectEpisode(currentIdx, wasPlaying, savedTime);
     }
 
-    document.getElementById("btnSquare").addEventListener("click", () => setMode("sq"));
-    document.getElementById("btnShortFull").addEventListener("click", () => setMode("vFull"));
-    document.getElementById("btnShortDrop").addEventListener("click", () => setMode("vDrop"));
+    btnToggleFormat.addEventListener("click", toggleFormat);
+    btnFooterFormat.addEventListener("click", toggleFormat);
     document.getElementById("prevBtn").addEventListener("click", () => selectEpisode(currentIdx - 1, true));
     document.getElementById("nextBtn").addEventListener("click", () => selectEpisode(currentIdx + 1, true));
 
