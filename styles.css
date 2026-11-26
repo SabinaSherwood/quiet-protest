@@ -1,19 +1,22 @@
 :root {
-  --bg-deep: #0c1017;
-  --bg-mid: #131924;
-  --bg-card: rgba(24, 31, 44, 0.86);
-  --bg-card-hover: rgba(31, 40, 56, 0.95);
-  --parchment: #f4ecd8;
-  --parchment-muted: #b9b2a3;
-  --amber: #f3b855;
-  --amber-soft: rgba(243, 184, 85, 0.16);
-  --amber-glow: rgba(243, 184, 85, 0.42);
+  --bg-deep: #0a0a0d;
+  --bg-mid: #101117;
+  --bg-card: #101117;
+  --bg-card-hover: #151720;
+  --parchment: #f5f1e9;
+  --parchment-muted: rgba(245, 241, 233, 0.62);
+  --faint: rgba(245, 241, 233, 0.34);
+  --frost-rim: rgba(210, 228, 245, 0.16);
+  --frost-border: rgba(210, 228, 245, 0.11);
+  --amber: #e8b84b;
+  --amber-soft: rgba(232, 184, 75, 0.12);
+  --amber-glow: rgba(232, 184, 75, 0.34);
   --terracotta: #d97843;
   --moss: #7ba07b;
-  --border: rgba(244, 236, 216, 0.12);
-  --border-amber: rgba(243, 184, 85, 0.36);
-  --shadow-lg: 0 22px 54px rgba(0, 0, 0, 0.55);
-  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --border: rgba(210, 228, 245, 0.11);
+  --border-amber: rgba(210, 228, 245, 0.18);
+  --shadow-lg: inset 0 1px 0 rgba(210, 228, 245, 0.15), 0 24px 64px rgba(0, 0, 0, 0.68);
+  --font-serif: Georgia, 'Cormorant Garamond', 'Times New Roman', serif;
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-marker: 'Permanent Marker', 'Caveat', cursive;
 }
@@ -35,13 +38,14 @@ html {
 
 body {
   font-family: var(--font-sans);
-  background: radial-gradient(ellipse at 50% 0%, #1b2434 0%, var(--bg-deep) 68%);
+  background: var(--bg-deep);
   color: var(--parchment);
   line-height: 1.65;
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
 img, canvas {
@@ -809,21 +813,288 @@ main, footer {
   font-size: 1.25rem;
 }
 
-/* Footer */
-.site-footer {
-  border-top: 1px solid var(--border);
-  padding: 2.8rem 1.5rem 3.4rem;
-  text-align: center;
-  color: var(--parchment-muted);
-  font-size: 0.88rem;
+/* Footer & Featured Carnival Marquee */
+body.is-playing #fireflyCanvas {
+  opacity: 0.18;
 }
 
-.footer-quote {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: 1.3rem;
+.brand-title {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.05rem;
+  font-weight: normal;
+  letter-spacing: 0.22em;
+}
+
+.carnival-showcase {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 42px 24px 56px;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.carnival-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.carnival-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--parchment-muted);
+  margin-bottom: 10px;
+}
+
+.carnival-h1 {
+  font-weight: normal;
+  font-size: clamp(28px, 4.5vw, 44px);
+  letter-spacing: 0.22em;
   color: var(--parchment);
-  margin-bottom: 0.65rem;
+  margin-bottom: 4px;
+}
+
+.carnival-filigree {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin: 16px auto 0;
+  max-width: 360px;
+  color: rgba(210, 228, 245, 0.42);
+}
+
+.carnival-filigree::before,
+.carnival-filigree::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(210, 228, 245, 0.24), transparent);
+}
+
+.carnival-theater-card {
+  max-width: 680px;
+  margin: 0 auto 46px;
+  background: var(--bg-card);
+  border: 1px solid var(--frost-border);
+  box-shadow: var(--shadow-lg);
+  border-radius: 14px;
+  padding: 20px 20px 22px;
+  transition: max-width 0.28s ease;
+}
+
+.carnival-theater-card.vertical-stage {
+  max-width: 410px;
+}
+
+.carnival-stage-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #050507;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.carnival-theater-card.vertical-stage .carnival-stage-frame {
+  aspect-ratio: 9 / 16;
+}
+
+.carnival-stage-frame video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  background: #050507;
+}
+
+.carnival-stage-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+  padding: 0 4px;
+}
+
+.carnival-stage-title {
+  font-size: 19px;
+  letter-spacing: 0.16em;
+}
+
+.carnival-stage-nav {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.carnival-nav-btn {
+  background: transparent;
+  color: var(--parchment);
+  border: 1px solid var(--frost-border);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.carnival-nav-btn:hover {
+  border-color: rgba(232, 184, 75, 0.55);
+  color: var(--amber);
+}
+
+.carnival-format-foot {
+  margin-top: 14px;
+  padding-top: 11px;
+  border-top: 1px solid rgba(210, 228, 245, 0.07);
+  text-align: center;
+}
+
+.carnival-format-link {
+  background: none;
+  border: none;
+  color: var(--faint);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
+  text-transform: lowercase;
+  cursor: pointer;
+  padding: 2px 6px;
+  transition: color 0.2s ease;
+}
+
+.carnival-format-link:hover {
+  color: var(--parchment);
+}
+
+.carnival-section-label {
+  text-align: center;
+  font-size: 11.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--parchment-muted);
+  margin-bottom: 22px;
+}
+
+.carnival-episode-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+  gap: 18px;
+}
+
+.carnival-ep-card {
+  background: var(--bg-card);
+  border: 1px solid var(--frost-border);
+  box-shadow: inset 0 1px 0 var(--frost-rim), 0 10px 28px rgba(0, 0, 0, 0.45);
+  border-radius: 10px;
+  padding: 12px;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+
+.carnival-ep-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(210, 228, 245, 0.32);
+}
+
+.carnival-ep-card.current {
+  border-color: rgba(232, 184, 75, 0.68);
+  box-shadow: inset 0 1px 0 rgba(232, 184, 75, 0.35), 0 12px 32px rgba(0, 0, 0, 0.6);
+}
+
+.carnival-ep-thumb {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #050507;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+body.carnival-mode-9x16 .carnival-ep-thumb {
+  aspect-ratio: 9 / 16;
+}
+
+.carnival-ep-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.carnival-ep-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(10, 10, 13, 0.82);
+  border: 1px solid rgba(210, 228, 245, 0.2);
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 10.5px;
+  letter-spacing: 0.14em;
+  color: var(--parchment);
+}
+
+.carnival-ep-name {
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  margin-bottom: 2px;
+}
+
+.archive-divider {
+  max-width: 980px;
+  margin: 18px auto 0;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.archive-divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(210, 228, 245, 0.18), transparent);
+}
+
+.archive-divider-label {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 11px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.archive-section .eyebrow {
+  color: var(--parchment-muted);
+  background: rgba(210, 228, 245, 0.05);
+  border-color: var(--frost-border);
+}
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 2.6rem 1.5rem 3.4rem;
+  text-align: center;
+  color: var(--faint);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 12px;
+  letter-spacing: 0.09em;
+  text-transform: lowercase;
+}
+
+.footer-bottom-row {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.footer-credit {
+  color: var(--faint);
 }
 
 @media (max-width: 960px) {

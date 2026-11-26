@@ -128,20 +128,24 @@ document.addEventListener('dragstart', e => {
   }
 });
 
-// 1. Ambient Firefly & Candlelight Motes
+// 1. Ambient Frost & Candlelight Motes (pauses automatically during video playback)
 (function initFireflies() {
   const canvas = document.getElementById('fireflyCanvas');
   if (!canvas || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const ctx = canvas.getContext('2d');
   let w = 0, h = 0;
-  const motes = Array.from({ length: 30 }, () => ({
-    x: Math.random(),
-    y: Math.random(),
-    r: 1.2 + Math.random() * 2.2,
-    vx: (Math.random() - 0.5) * 0.0002,
-    vy: -0.00012 - Math.random() * 0.00022,
-    phase: Math.random() * Math.PI * 2
-  }));
+  const motes = Array.from({ length: 48 }, (_, i) => {
+    const isSnow = i % 3 !== 0;
+    return {
+      isSnow,
+      x: Math.random(),
+      y: Math.random(),
+      r: isSnow ? 1.1 + Math.random() * 1.9 : 1.2 + Math.random() * 2.1,
+      vx: (Math.random() - 0.5) * 0.00018,
+      vy: isSnow ? 0.00022 + Math.random() * 0.00034 : -(0.00012 + Math.random() * 0.00022),
+      phase: Math.random() * Math.PI * 2
+    };
+  });
 
   function resize() {
     w = canvas.width = window.innerWidth;
@@ -151,26 +155,154 @@ document.addEventListener('dragstart', e => {
   resize();
 
   function tick(t) {
-    ctx.clearRect(0, 0, w, h);
-    for (const m of motes) {
-      m.x = (m.x + m.vx + 1) % 1;
-      m.y = (m.y + m.vy + 1) % 1;
-      const alpha = 0.2 + 0.45 * (0.5 + 0.5 * Math.sin(t * 0.0016 + m.phase));
-      const gx = m.x * w, gy = m.y * h;
-      const grad = ctx.createRadialGradient(gx, gy, 0, gx, gy, m.r * 5);
-      grad.addColorStop(0, `rgba(255, 214, 128, ${alpha})`);
-      grad.addColorStop(1, 'rgba(255, 214, 128, 0)');
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.arc(gx, gy, m.r * 5, 0, Math.PI * 2);
-      ctx.fill();
+    if (!document.body.classList.contains('is-playing')) {
+      ctx.clearRect(0, 0, w, h);
+      for (const m of motes) {
+        m.x = (m.x + m.vx + 1) % 1;
+        m.y = (m.y + m.vy + 1) % 1;
+        const alpha = 0.18 + 0.34 * (0.5 + 0.5 * Math.sin(t * 0.0015 + m.phase));
+        const gx = m.x * w, gy = m.y * h;
+        ctx.beginPath();
+        ctx.arc(gx, gy, m.r, 0, Math.PI * 2);
+        ctx.fillStyle = m.isSnow
+          ? `rgba(226, 238, 255, ${alpha.toFixed(3)})`
+          : `rgba(236, 184, 82, ${alpha.toFixed(3)})`;
+        ctx.fill();
+      }
     }
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
 })();
 
-// 2. Season 1 Screening Room (Stream Only)
+// 1B. Featured Marquee: CARNIVAL Screening Room (9:16 Full Default + Discreet Bottom 1:1 Switch)
+(function initCarnivalTheater() {
+  const CARNIVAL_EPISODES = [
+    { roman: 'I',    title: 'CARNIVAL I',    sub: 'Fresco Storm Sky, Candied Apples & Closing Candle Holdout' },
+    { roman: 'II',   title: 'CARNIVAL II',   sub: 'Fairgrounds Ferris Wheel, Concession Midway & Jazz Bandstand' },
+    { roman: 'III',  title: 'CARNIVAL III',  sub: 'Open Window Bridge, Horse Viewer Turn & Swirling Autumn Leaves' },
+    { roman: 'IV',   title: 'CARNIVAL IV',   sub: 'Foil-Tray Steam, TV Confetti Shower & Autumn-to-Snow Drift' },
+    { roman: 'V',    title: 'CARNIVAL V',    sub: 'Inverted Spinning Christmas Tree, Rooftop Santa & Stoplight' },
+    { roman: 'VI',   title: 'CARNIVAL VI',   sub: "Whispered Frame Shutter Slam, Holiday Aftermath & Mary's Walk-Out" },
+    { roman: 'VII',  title: 'CARNIVAL VII',  sub: 'Match Spark, Midnight 3D Merry-Go-Round & Empty Ghost Horse' },
+    { roman: 'VIII', title: 'CARNIVAL VIII', sub: 'Dual-Axis Spinning Teacups, Snowfall & Molten Ferris Wheel' },
+    { roman: 'IX',   title: 'CARNIVAL IX',   sub: 'Scary Red Funhouse Discovery, One-Way Cool Blue Reclamation & 1-Beat Glass Drop' },
+    { roman: 'X',    title: 'CARNIVAL X',    sub: 'Skate-Drop Transform, Detroit Winter Rink & Cracked-Ice Cliffhanger' }
+  ];
+
+  const player = document.getElementById('carnivalPlayer');
+  const stageTitle = document.getElementById('carnivalStageTitle');
+  const theaterCard = document.getElementById('carnivalTheaterCard');
+  const grid = document.getElementById('carnivalEpisodeGrid');
+  const btnFormat = document.getElementById('btnCarnivalFormat');
+  const btnFooterFormat = document.getElementById('btnFooterCarnivalFormat');
+  const s1Video = document.getElementById('mainVideo');
+  if (!player || !grid) return;
+
+  let currentIdx = 0;
+  let currentMode = 'vFull'; // 'vFull' | 'sq'
+
+  const hashRoman = window.location.hash.replace('#', '').trim().toUpperCase();
+  const hashMatch = CARNIVAL_EPISODES.findIndex(ep => ep.roman === hashRoman);
+  if (hashMatch >= 0) currentIdx = hashMatch;
+
+  function srcFor(ep) {
+    const r = ep.roman;
+    const v = r === 'IX' ? '?v=4' : '?v=1';
+    return currentMode === 'vFull'
+      ? `carnival/videos/carnival_${r}_9x16_full.mp4${v}`
+      : `carnival/videos/carnival_${r}_square.mp4${v}`;
+  }
+
+  function posterFor(ep) {
+    const r = ep.roman;
+    const v = r === 'IX' ? '?v=4' : '?v=1';
+    return currentMode === 'sq'
+      ? `carnival/posters/sq_${r}.jpg${v}`
+      : `carnival/posters/v_${r}.jpg${v}`;
+  }
+
+  function updateFormatLabels() {
+    const label = currentMode === 'vFull' ? 'switch to 1:1 square' : 'switch to 9:16 vertical';
+    if (btnFormat) btnFormat.textContent = label;
+    if (btnFooterFormat) btnFooterFormat.textContent = label;
+  }
+
+  function renderGrid() {
+    grid.innerHTML = '';
+    CARNIVAL_EPISODES.forEach((ep, idx) => {
+      const card = document.createElement('article');
+      card.className = 'carnival-ep-card' + (idx === currentIdx ? ' current' : '');
+      card.dataset.description = ep.sub;
+      card.setAttribute('aria-label', `${ep.title} — ${ep.sub}`);
+      card.innerHTML = `
+        <div class="carnival-ep-thumb">
+          <img src="${posterFor(ep)}" alt="${ep.title} — ${ep.sub}" loading="lazy" draggable="false" oncontextmenu="return false;" />
+          <span class="carnival-ep-badge">${ep.roman}</span>
+        </div>
+        <div class="carnival-ep-name">${ep.title}</div>
+      `;
+      card.addEventListener('click', () => selectEpisode(idx, true));
+      grid.appendChild(card);
+    });
+  }
+
+  function selectEpisode(idx, autoplay = false, resumeTime = null) {
+    currentIdx = (idx + CARNIVAL_EPISODES.length) % CARNIVAL_EPISODES.length;
+    const ep = CARNIVAL_EPISODES[currentIdx];
+    stageTitle.textContent = ep.title;
+    player.setAttribute('aria-label', `${ep.title} — ${ep.sub}`);
+    player.poster = posterFor(ep);
+    player.src = srcFor(ep);
+    if (resumeTime !== null && resumeTime > 0) {
+      player.addEventListener('loadedmetadata', function onMeta() {
+        player.removeEventListener('loadedmetadata', onMeta);
+        player.currentTime = Math.min(resumeTime, Math.max(0, (player.duration || resumeTime) - 0.1));
+      });
+    }
+    document.querySelectorAll('.carnival-ep-card').forEach((el, i) => {
+      el.classList.toggle('current', i === currentIdx);
+    });
+    if (autoplay) {
+      if (s1Video && !s1Video.paused) s1Video.pause();
+      player.play().catch(() => {});
+    }
+  }
+
+  function toggleFormat() {
+    const wasPlaying = !player.paused;
+    const savedTime = player.currentTime || 0;
+    currentMode = currentMode === 'vFull' ? 'sq' : 'vFull';
+    const isVert = currentMode === 'vFull';
+    theaterCard.classList.toggle('vertical-stage', isVert);
+    document.body.classList.toggle('carnival-mode-9x16', isVert);
+    updateFormatLabels();
+    renderGrid();
+    selectEpisode(currentIdx, wasPlaying, savedTime);
+  }
+
+  if (btnFormat) btnFormat.addEventListener('click', toggleFormat);
+  if (btnFooterFormat) btnFooterFormat.addEventListener('click', toggleFormat);
+  document.getElementById('carnivalPrevBtn')?.addEventListener('click', () => selectEpisode(currentIdx - 1, true));
+  document.getElementById('carnivalNextBtn')?.addEventListener('click', () => selectEpisode(currentIdx + 1, true));
+
+  player.addEventListener('play', () => {
+    if (s1Video && !s1Video.paused) s1Video.pause();
+    document.body.classList.add('is-playing');
+  });
+  player.addEventListener('pause', () => {
+    if (!s1Video || s1Video.paused) document.body.classList.remove('is-playing');
+  });
+  player.addEventListener('ended', () => {
+    document.body.classList.remove('is-playing');
+    if (currentIdx < CARNIVAL_EPISODES.length - 1) selectEpisode(currentIdx + 1, true);
+  });
+
+  renderGrid();
+  selectEpisode(currentIdx, false);
+})();
+
+// 2. Season 1 Screening Room (Stream Only, Title-Only Display w/ Metadata Preserved)
 (function initTheater() {
   const playlistEl = document.getElementById('episodePlaylist');
   const videoEl = document.getElementById('mainVideo');
@@ -178,12 +310,15 @@ document.addEventListener('dragstart', e => {
   const badgeEl = document.getElementById('nowPlayingBadge');
   const titleEl = document.getElementById('playerTitle');
   const descEl = document.getElementById('playerDesc');
+  const carnivalPlayer = document.getElementById('carnivalPlayer');
+  if (!playlistEl || !videoEl) return;
 
   function applyEpisode(ep, autoplay = false) {
     stageEl.classList.toggle('vertical-mode', Boolean(ep.vertical));
     badgeEl.textContent = `${ep.num} • ${ep.runtime}`;
     titleEl.textContent = ep.title;
-    descEl.textContent = ep.desc;
+    if (descEl) descEl.textContent = ep.desc;
+    videoEl.setAttribute('aria-label', `${ep.title} — ${ep.desc}`);
 
     videoEl.poster = ep.poster;
     videoEl.src = ep.video1080;
@@ -193,17 +328,27 @@ document.addEventListener('dragstart', e => {
     });
 
     if (autoplay) {
+      if (carnivalPlayer && !carnivalPlayer.paused) carnivalPlayer.pause();
       videoEl.play().catch(() => {});
     }
   }
+
+  videoEl.addEventListener('play', () => {
+    if (carnivalPlayer && !carnivalPlayer.paused) carnivalPlayer.pause();
+    document.body.classList.add('is-playing');
+  });
+  videoEl.addEventListener('pause', () => {
+    if (!carnivalPlayer || carnivalPlayer.paused) document.body.classList.remove('is-playing');
+  });
 
   EPISODES.forEach((ep, i) => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'ep-item' + (i === 0 ? ' active' : '');
     btn.dataset.id = ep.id;
+    btn.setAttribute('aria-label', `${ep.title} — ${ep.desc}`);
     btn.innerHTML = `
-      <img class="ep-thumb" src="${ep.poster}" alt="${ep.title}" loading="lazy" draggable="false">
+      <img class="ep-thumb" src="${ep.poster}" alt="${ep.title} — ${ep.desc}" loading="lazy" draggable="false">
       <div>
         <div class="ep-num">${ep.num}</div>
         <div class="ep-name">${ep.title}</div>
